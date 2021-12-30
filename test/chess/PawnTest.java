@@ -1,25 +1,142 @@
 package chess;
 
+import org.junit.jupiter.api.Test;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
     Pawn pawn = new Pawn(new int[] {1, 1});
 
-    @org.junit.jupiter.api.Test
+    @Test
     void validateMovement() {
-        for(int i = 0; i < 8; i++) {
-            for(int j = 0; j < 8; j++) {
-                if(i == 1 && j == 2) {
-                    assertTrue(pawn.validateMovement(new int[]{i, j}, null));
-                } else {
-                    assertFalse(pawn.validateMovement(new int[]{i, j}, null));
-                }
-                if((i == 0 || i == 2) && j == 2) {
-                    assertTrue(pawn.validateMovement(new int[]{i, j}, new Pawn(new int[]{i, j})));
-                } else {
-                    assertFalse(pawn.validateMovement(new int[]{i, j}, new Pawn(new int[]{i, j})));
-                }
-            }
-        }
+        assertFalse(pawn.validateMovement(new int[]{0, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{0, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 1}, null));
+        assertTrue(pawn.validateMovement(new int[]{1, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{2, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{3, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{4, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{5, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{6, 7}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 0}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 1}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 3}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 4}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 5}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 6}, null));
+        assertFalse(pawn.validateMovement(new int[]{7, 7}, null));
+
+        assertFalse(pawn.validateMovement(new int[]{0, 0}, new Pawn(new int[]{0, 0})));
+        assertFalse(pawn.validateMovement(new int[]{0, 1}, new Pawn(new int[]{0, 1})));
+        assertTrue(pawn.validateMovement(new int[]{0, 2}, new Pawn(new int[]{0, 2})));
+        assertFalse(pawn.validateMovement(new int[]{0, 3}, new Pawn(new int[]{0, 3})));
+        assertFalse(pawn.validateMovement(new int[]{0, 4}, new Pawn(new int[]{0, 4})));
+        assertFalse(pawn.validateMovement(new int[]{0, 5}, new Pawn(new int[]{0, 5})));
+        assertFalse(pawn.validateMovement(new int[]{0, 6}, new Pawn(new int[]{0, 6})));
+        assertFalse(pawn.validateMovement(new int[]{0, 7}, new Pawn(new int[]{0, 7})));
+        assertFalse(pawn.validateMovement(new int[]{1, 0}, new Pawn(new int[]{1, 0})));
+        assertFalse(pawn.validateMovement(new int[]{1, 1}, new Pawn(new int[]{1, 1})));
+        assertFalse(pawn.validateMovement(new int[]{1, 2}, new Pawn(new int[]{1, 2})));
+        assertFalse(pawn.validateMovement(new int[]{1, 3}, new Pawn(new int[]{1, 3})));
+        assertFalse(pawn.validateMovement(new int[]{1, 4}, new Pawn(new int[]{1, 4})));
+        assertFalse(pawn.validateMovement(new int[]{1, 5}, new Pawn(new int[]{1, 5})));
+        assertFalse(pawn.validateMovement(new int[]{1, 6}, new Pawn(new int[]{1, 6})));
+        assertFalse(pawn.validateMovement(new int[]{1, 7}, new Pawn(new int[]{1, 7})));
+        assertFalse(pawn.validateMovement(new int[]{2, 0}, new Pawn(new int[]{2, 0})));
+        assertFalse(pawn.validateMovement(new int[]{2, 1}, new Pawn(new int[]{2, 1})));
+        assertTrue(pawn.validateMovement(new int[]{2, 2}, new Pawn(new int[]{2, 2})));
+        assertFalse(pawn.validateMovement(new int[]{2, 3}, new Pawn(new int[]{2, 3})));
+        assertFalse(pawn.validateMovement(new int[]{2, 4}, new Pawn(new int[]{2, 4})));
+        assertFalse(pawn.validateMovement(new int[]{2, 5}, new Pawn(new int[]{2, 5})));
+        assertFalse(pawn.validateMovement(new int[]{2, 6}, new Pawn(new int[]{2, 6})));
+        assertFalse(pawn.validateMovement(new int[]{2, 7}, new Pawn(new int[]{2, 7})));
+        assertFalse(pawn.validateMovement(new int[]{3, 0}, new Pawn(new int[]{3, 0})));
+        assertFalse(pawn.validateMovement(new int[]{3, 1}, new Pawn(new int[]{3, 1})));
+        assertFalse(pawn.validateMovement(new int[]{3, 2}, new Pawn(new int[]{3, 2})));
+        assertFalse(pawn.validateMovement(new int[]{3, 3}, new Pawn(new int[]{3, 3})));
+        assertFalse(pawn.validateMovement(new int[]{3, 4}, new Pawn(new int[]{3, 4})));
+        assertFalse(pawn.validateMovement(new int[]{3, 5}, new Pawn(new int[]{3, 5})));
+        assertFalse(pawn.validateMovement(new int[]{3, 6}, new Pawn(new int[]{3, 6})));
+        assertFalse(pawn.validateMovement(new int[]{3, 7}, new Pawn(new int[]{3, 7})));
+        assertFalse(pawn.validateMovement(new int[]{4, 0}, new Pawn(new int[]{4, 0})));
+        assertFalse(pawn.validateMovement(new int[]{4, 1}, new Pawn(new int[]{4, 1})));
+        assertFalse(pawn.validateMovement(new int[]{4, 2}, new Pawn(new int[]{4, 2})));
+        assertFalse(pawn.validateMovement(new int[]{4, 3}, new Pawn(new int[]{4, 3})));
+        assertFalse(pawn.validateMovement(new int[]{4, 4}, new Pawn(new int[]{4, 4})));
+        assertFalse(pawn.validateMovement(new int[]{4, 5}, new Pawn(new int[]{4, 5})));
+        assertFalse(pawn.validateMovement(new int[]{4, 6}, new Pawn(new int[]{4, 6})));
+        assertFalse(pawn.validateMovement(new int[]{4, 7}, new Pawn(new int[]{4, 7})));
+        assertFalse(pawn.validateMovement(new int[]{5, 0}, new Pawn(new int[]{5, 0})));
+        assertFalse(pawn.validateMovement(new int[]{5, 1}, new Pawn(new int[]{5, 1})));
+        assertFalse(pawn.validateMovement(new int[]{5, 2}, new Pawn(new int[]{5, 2})));
+        assertFalse(pawn.validateMovement(new int[]{5, 3}, new Pawn(new int[]{5, 3})));
+        assertFalse(pawn.validateMovement(new int[]{5, 4}, new Pawn(new int[]{5, 4})));
+        assertFalse(pawn.validateMovement(new int[]{5, 5}, new Pawn(new int[]{5, 5})));
+        assertFalse(pawn.validateMovement(new int[]{5, 6}, new Pawn(new int[]{5, 6})));
+        assertFalse(pawn.validateMovement(new int[]{5, 7}, new Pawn(new int[]{5, 7})));
+        assertFalse(pawn.validateMovement(new int[]{6, 0}, new Pawn(new int[]{6, 0})));
+        assertFalse(pawn.validateMovement(new int[]{6, 1}, new Pawn(new int[]{6, 1})));
+        assertFalse(pawn.validateMovement(new int[]{6, 2}, new Pawn(new int[]{6, 2})));
+        assertFalse(pawn.validateMovement(new int[]{6, 3}, new Pawn(new int[]{6, 3})));
+        assertFalse(pawn.validateMovement(new int[]{6, 4}, new Pawn(new int[]{6, 4})));
+        assertFalse(pawn.validateMovement(new int[]{6, 5}, new Pawn(new int[]{6, 5})));
+        assertFalse(pawn.validateMovement(new int[]{6, 6}, new Pawn(new int[]{6, 6})));
+        assertFalse(pawn.validateMovement(new int[]{6, 7}, new Pawn(new int[]{6, 7})));
+        assertFalse(pawn.validateMovement(new int[]{7, 0}, new Pawn(new int[]{7, 0})));
+        assertFalse(pawn.validateMovement(new int[]{7, 1}, new Pawn(new int[]{7, 1})));
+        assertFalse(pawn.validateMovement(new int[]{7, 2}, new Pawn(new int[]{7, 2})));
+        assertFalse(pawn.validateMovement(new int[]{7, 3}, new Pawn(new int[]{7, 3})));
+        assertFalse(pawn.validateMovement(new int[]{7, 4}, new Pawn(new int[]{7, 4})));
+        assertFalse(pawn.validateMovement(new int[]{7, 5}, new Pawn(new int[]{7, 5})));
+        assertFalse(pawn.validateMovement(new int[]{7, 6}, new Pawn(new int[]{7, 6})));
+        assertFalse(pawn.validateMovement(new int[]{7, 7}, new Pawn(new int[]{7, 7})));
     }
 }
