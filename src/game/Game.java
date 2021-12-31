@@ -1,9 +1,13 @@
-package chess;
+package game;
+
+import chess.*;
 
 public class Game {
     public Piece[][] board;
+    public Player player;
 
-    public Game(boolean side) {
+    public Game(Player player) {
+        this.player = player;
         board = new Piece[8][8];
         board[0][0] = new Rook(new int[]{0,0});
         board[1][0] = new Knight(new int[]{1,0});
@@ -17,7 +21,7 @@ public class Game {
         board[5][7] = new Bishop(new int[]{5,7});
         board[6][7] = new Knight(new int[]{6,7});
         board[7][7] = new Rook(new int[]{7,7});
-        if(side) {
+        if(player.getSide()) {
             board[3][0] = new Queen(new int[]{3,0});
             board[4][0] = new King(new int[]{4,0});
 
@@ -33,7 +37,7 @@ public class Game {
         for(int i = 0; i < 8; i++) {
             board[i][1] = new Pawn(new int[]{i,1});
             board[i][6] = new Pawn(new int[]{i,6});
-            for(int j = 2; i < 6; i++) {
+            for(int j = 2; j < 6; j++) {
                 board[i][j] = null;
             }
         }
