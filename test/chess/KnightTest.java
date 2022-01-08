@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KnightTest {
-    Knight knight = new Knight(new int[]{4,4});
+    Knight knight = new Knight(new int[]{4,4}, true);
     
     @Test
     void validateMovement() {

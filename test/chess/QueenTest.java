@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class QueenTest {
-    Queen queen = new Queen(new int[]{4,4});
+    Queen queen = new Queen(new int[]{4,4}, true);
 
     @Test
     void validateMovement() {

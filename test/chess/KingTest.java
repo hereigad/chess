@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class KingTest {
-    King king = new King(new int[]{4,4});
+    King king = new King(new int[]{4,4}, true);
 
     @Test
     void validateMovement() {

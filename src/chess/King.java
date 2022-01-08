@@ -2,9 +2,9 @@ package chess;
 
 public class King extends Piece {
 
-    public King(int[] position) {
-        super(position);
-        this.name = "King";
+    public King(int[] position, boolean color) {
+        super(position, color);
+        this.name = "k";
     }
 
     @Override

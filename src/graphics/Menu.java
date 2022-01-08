@@ -9,20 +9,20 @@ import java.util.concurrent.*;
 
 public class Menu extends JFrame {
     private JButton matchmakeButton;
-    private JPanel panel1;
+    private JPanel contentPane;
     private Future<Socket> player2;
-    private CountDownLatch c;
 
-    public Menu(CountDownLatch c) {
-        this.c = c;
-        this.setContentPane(panel1);
+    public Menu() {
+        this.setContentPane(contentPane);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         matchmakeButton.addActionListener(new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                matchmakeButton.setEnabled(false);
                 player2 = Client.matchmake();
                 System.out.println("Matchmaking");
+
             }
         });
 

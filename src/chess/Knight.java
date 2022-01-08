@@ -1,9 +1,9 @@
 package chess;
 
 public class Knight extends Piece {
-    public Knight(int[] position) {
-        super(position);
-        this.name = "Knight";
+    public Knight(int[] position, boolean color) {
+        super(position, color);
+        this.name = "n";
     }
 
     @Override

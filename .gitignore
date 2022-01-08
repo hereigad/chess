@@ -1,2 +1,4 @@
 /.idea/
 /out/
+/res/pieceIcons/*.svg
+/res/ports.properties

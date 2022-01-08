@@ -1,6 +1,8 @@
 package networkLogic;
 
 import com.google.gson.Gson;
+import game.Game;
+import game.Player;
 import graphics.Menu;
 
 import java.io.*;
@@ -18,9 +20,11 @@ public class Client {
 
     public static void main(String[] args) {
         ports = args;
-        Menu menu = new Menu(c);
+        Menu menu = new Menu();
         menu.setVisible(true);
         Socket player2Socket = null;
+        Game game = null;
+        Player localPlayer = null;
         Future<Socket> player2Future2 = pool.submit(Client::acceptMatch);
         try {
             c.await();
@@ -34,6 +38,7 @@ public class Client {
                 try {
                     player2Socket = player2Future1.get();
                     player2Future2.cancel(true);
+                    localPlayer = new Player(true);
                 } catch(InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
@@ -43,12 +48,16 @@ public class Client {
                 try {
                     player2Socket = player2Future2.get();
                     player2Future1.cancel(true);
+                    localPlayer = new Player(false);
                 } catch(InterruptedException | ExecutionException e) {
                     e.printStackTrace();
                 }
             }
         }
         System.out.println("Funciona");
+        if(localPlayer != null) {
+            game = new Game(localPlayer);
+        }
     }
 
     public static Future<Socket> matchmake() {
@@ -94,5 +103,9 @@ public class Client {
             e.printStackTrace();
         }
         return player2Socket;
+    }
+
+    public static void sendMovement(Socket socket, int[] movement) {
+
     }
 }

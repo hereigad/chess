@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="graphics.Match">
+  <grid id="27dc6" binding="contentPane" layout-manager="GridBagLayout">
+    <constraints>
+      <xy x="20" y="20" width="1280" height="720"/>
+    </constraints>
+    <properties>
+      <minimumSize width="1280" height="720"/>
+      <preferredSize width="720" height="720"/>
+    </properties>
+    <border type="none"/>
+    <children/>
+  </grid>
+</form>

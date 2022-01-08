@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class RookTest {
-    Rook rook = new Rook(new int[]{0,0});
+    Rook rook = new Rook(new int[]{0,0}, true);
 
     @Test
     void validateMovement() {

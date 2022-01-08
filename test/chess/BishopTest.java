@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BishopTest {
-    Bishop bishop = new Bishop(new int[]{4,4});
+    Bishop bishop = new Bishop(new int[]{4,4}, true);
 
     @Test
     void validateMovement() {
