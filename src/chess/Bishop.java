@@ -8,6 +8,10 @@ public class Bishop extends Piece {
 
     @Override
     public boolean validateMovement(int[] movement, Piece capturable) {
-        return position[0] - position[1] == movement[0] - movement[1] || position[0] + position[1] == movement[0] + movement[1];
+        boolean capture = true;
+        if(capturable != null) {
+            capture = this.color != capturable.color;
+        }
+        return (position[0] - position[1] == movement[0] - movement[1] || position[0] + position[1] == movement[0] + movement[1]) && capture;
     }
 }

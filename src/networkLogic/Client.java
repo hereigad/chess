@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import game.Game;
 import game.Player;
 import graphics.Menu;
+import jdk.internal.util.xml.impl.Input;
 
 import java.io.*;
 import java.net.InetAddress;
@@ -106,6 +107,29 @@ public class Client {
     }
 
     public static void sendMovement(Socket socket, int[] movement) {
+        try(OutputStream os = new DataOutputStream(socket.getOutputStream())) {
+            ((DataOutputStream) os).writeInt(movement[0]);
+            ((DataOutputStream) os).writeInt(movement[1]);
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+    }
 
+    public static int[] receiveMovement(Socket socket) {
+        int[] movement = new int[2];
+        int i = 0;
+        try(InputStream is = new DataInputStream(socket.getInputStream())) {
+            while(i < 2) {
+                try {
+                    movement[i] = ((DataInputStream) is).readInt();
+                    i++;
+                } catch(EOFException e) {
+                    e.printStackTrace();
+                }
+            }
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
+        return movement;
     }
 }
