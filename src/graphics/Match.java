@@ -10,6 +10,7 @@ import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.net.URL;
+import java.util.Arrays;
 
 public class Match extends JFrame {
     private Game game;
@@ -108,14 +109,14 @@ public class Match extends JFrame {
                 square.setBorder(new LineBorder(Color.GREEN));
             }
         } else {
-            movement = new int[]{7 - square.getJ(), 7 - square.getI()};
+            movement = new int[]{7 - square.getJ(), 7 - square.getI(), selected.position[0], selected.position[1]};
             if(this.selected.validateMovement(movement, game.board[movement[0]][movement[1]])) {
                 //this.getGlassPane().setVisible(true);
                 if(piece != null) {
                     game.player.getCaptured().add(piece);
                 }
                 game.board[selected.position[0]][selected.position[1]] = null;
-                selected.position = movement;
+                selected.position = Arrays.copyOfRange(movement, 0, 2);
                 game.board[movement[0]][movement[1]] = selected;
             }
             selected = null;
@@ -126,11 +127,11 @@ public class Match extends JFrame {
 
     private void updateRival(int[] movement) {
         if(movement != null) {
-            Piece piece = game.board[movement[0]][movement[1]];
+            Piece piece = game.board[7 - movement[2]][7 - movement[3]];
             game.board[piece.position[0]][piece.position[1]] = null;
-            piece.position = movement;
-            game.board[movement[0]][movement[1]] = piece;
-            this.getGlassPane().setVisible(false);
+            piece.position = Arrays.copyOfRange(movement, 0, 2);
+            game.board[7 - movement[0]][7 - movement[1]] = piece;
+            //this.getGlassPane().setVisible(false);
             updateBoard();
         }
     }

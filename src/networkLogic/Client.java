@@ -110,20 +110,21 @@ public class Client {
     public static void sendMovement(int[] movement) {
         try(Socket player2Socket = new Socket(player2Data.getAddress(), player2Data.getPort());
             OutputStream os = new DataOutputStream(player2Socket.getOutputStream())) {
-            ((DataOutputStream) os).writeInt(movement[0]);
-            ((DataOutputStream) os).writeInt(movement[1]);
+            for(int i = 0; i < 4; i++) {
+                ((DataOutputStream) os).writeInt(movement[i]);
+            }
         } catch(IOException e) {
             e.printStackTrace();
         }
     }
 
     public static int[] receiveMovement() {
-        int[] movement = new int[2];
+        int[] movement = new int[4];
         int i = 0;
         try(ServerSocket local = new ServerSocket(Integer.parseInt(ports[0]));
             Socket player2Socket = local.accept();
             InputStream is = new DataInputStream(player2Socket.getInputStream())) {
-            while(i < 2) {
+            while(i < 4) {
                 try {
                     movement[i] = ((DataInputStream) is).readInt();
                     i++;
