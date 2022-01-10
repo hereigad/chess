@@ -3,6 +3,7 @@ package networkLogic;
 import com.google.gson.Gson;
 import game.Game;
 import game.Player;
+import graphics.Match;
 import graphics.Menu;
 import jdk.internal.util.xml.impl.Input;
 
@@ -18,12 +19,13 @@ public class Client {
     private static CountDownLatch c = new CountDownLatch(1);
     private static String[] ports;
     private static final ExecutorService pool = Executors.newCachedThreadPool();
+    private static Socket player2Socket;
 
     public static void main(String[] args) {
         ports = args;
         Menu menu = new Menu();
         menu.setVisible(true);
-        Socket player2Socket = null;
+        player2Socket = null;
         Game game = null;
         Player localPlayer = null;
         Future<Socket> player2Future2 = pool.submit(Client::acceptMatch);
@@ -55,9 +57,14 @@ public class Client {
                 }
             }
         }
-        System.out.println("Funciona");
+        if(player2Socket != null) {
+            System.out.println("Funciona");
+        }
         if(localPlayer != null) {
+            menu.dispose();
             game = new Game(localPlayer);
+            Match match = new Match(game);
+            match.setVisible(true);
         }
     }
 
@@ -106,8 +113,8 @@ public class Client {
         return player2Socket;
     }
 
-    public static void sendMovement(Socket socket, int[] movement) {
-        try(OutputStream os = new DataOutputStream(socket.getOutputStream())) {
+    public static void sendMovement(int[] movement) {
+        try(OutputStream os = new DataOutputStream(player2Socket.getOutputStream())) {
             ((DataOutputStream) os).writeInt(movement[0]);
             ((DataOutputStream) os).writeInt(movement[1]);
         } catch(IOException e) {
@@ -115,10 +122,10 @@ public class Client {
         }
     }
 
-    public static int[] receiveMovement(Socket socket) {
+    public static int[] receiveMovement() {
         int[] movement = new int[2];
         int i = 0;
-        try(InputStream is = new DataInputStream(socket.getInputStream())) {
+        try(InputStream is = new DataInputStream(player2Socket.getInputStream())) {
             while(i < 2) {
                 try {
                     movement[i] = ((DataInputStream) is).readInt();

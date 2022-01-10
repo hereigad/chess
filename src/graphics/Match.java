@@ -18,15 +18,21 @@ public class Match extends JFrame {
     private JPanel contentPane;
     private Square[][] squares;
     private Piece selected;
-    private Socket player2;
 
-    public Match(Game game, Socket player2) {
+    public Match(Game game) {
         this.setContentPane(contentPane);
         this.setTitle("Chess");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.game = game;
-        this.player2 = player2;
         this.selected = null;
+        this.setGlassPane(new JPanel());
+        ((JPanel) this.getGlassPane()).setOpaque(false);
+        this.getGlassPane().addMouseListener(new MouseInputAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                super.mouseClicked(e);
+            }
+        });
         squares = new Square[8][8];
         GridBagConstraints c = new GridBagConstraints();
         for(int i = 7; i > -1; i--) {
@@ -45,15 +51,28 @@ public class Match extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         int[] movement = ((Match) SwingUtilities.getWindowAncestor(e.getComponent())).move((Square) e.getComponent());
-                        if(movement != null) {
-                            Client.sendMovement(player2, movement);
-                            movement = Client.receiveMovement(player2);
-                        }
+//                        if(movement != null) {
+//                            Client.sendMovement(movement);
+//                        }
                     }
                 });
                 contentPane.add(squares[j][i], c);
             }
         }
+//        Thread receive = new Thread(new Runnable() {
+//            @Override
+//            public void run() {
+//                while(true) {
+//                    int[] movement = null;
+//                    movement = Client.receiveMovement();
+//                    if(movement != null) {
+//                        updateRival(movement);
+//                    }
+//                }
+//            }
+//        });
+//        receive.start();
+
         this.updateBoard();
         this.pack();
     }
@@ -98,6 +117,7 @@ public class Match extends JFrame {
         } else {
             movement = new int[]{7 - square.getJ(), 7 - square.getI()};
             if(this.selected.validateMovement(movement, game.board[movement[0]][movement[1]])) {
+                //this.getGlassPane().setVisible(true);
                 if(piece != null) {
                     game.player.getCaptured().add(piece);
                 }
@@ -112,6 +132,13 @@ public class Match extends JFrame {
     }
 
     private void updateRival(int[] movement) {
-
+        if(movement != null) {
+            Piece piece = game.board[movement[0]][movement[1]];
+            game.board[piece.position[0]][piece.position[1]] = null;
+            piece.position = movement;
+            game.board[movement[0]][movement[1]] = piece;
+            this.getGlassPane().setVisible(false);
+            updateBoard();
+        }
     }
 }
