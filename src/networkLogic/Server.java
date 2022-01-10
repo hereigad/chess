@@ -35,7 +35,7 @@ public class Server {
                             OutputStream os1 = new ObjectOutputStream(player1Socket.getOutputStream());
                             OutputStream os2 = new ObjectOutputStream(player2Socket.getOutputStream())) {
                             ((ObjectOutputStream) os1).writeObject(new PlayerData(pair2.getKey(), pair2.getValue()[0], true));
-                            ((ObjectOutputStream) os2).writeObject(new PlayerData(pair1.getKey(), pair2.getValue()[0], false));
+                            ((ObjectOutputStream) os2).writeObject(new PlayerData(pair1.getKey(), pair1.getValue()[0], false));
                         } catch(IOException e) {
                             e.printStackTrace();
                         }

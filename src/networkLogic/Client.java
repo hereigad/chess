@@ -40,14 +40,17 @@ public class Client {
         if(player2Data != null) {
             System.out.println("Datos de rival recibidos");
         }
-        AtomicBoolean connection = new AtomicBoolean(false);
-        pool.execute(() -> connection.set(acceptMatch()));
+        Future<Boolean> connection = pool.submit(Client::acceptMatch);
         pool.execute(Client::tryConnection);
-        if(localPlayer != null && player2Data != null && connection.get()) {
-            menu.dispose();
-            game = new Game(localPlayer);
-            Match match = new Match(game);
-            match.setVisible(true);
+        try {
+            if(localPlayer != null && player2Data != null && connection.get()) {
+                menu.dispose();
+                game = new Game(localPlayer);
+                Match match = new Match(game);
+                match.setVisible(true);
+            }
+        } catch(InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
     }
 
@@ -57,7 +60,7 @@ public class Client {
             try(Socket server = new Socket("localhost", 7200);
                 OutputStream os = new DataOutputStream(server.getOutputStream())) {
                 int gamePort = Integer.parseInt(ports[0]);
-                int receivePort = Integer.parseInt(ports[2]);
+                int receivePort = Integer.parseInt(ports[1]);
                 ((DataOutputStream) os).writeInt(gamePort);
                 ((DataOutputStream) os).writeInt(receivePort);
                 os.flush();
@@ -67,7 +70,7 @@ public class Client {
         });
         player2 = pool.submit(() -> {
             PlayerData rival = null;
-            try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[2]))) {
+            try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[1]))) {
                 try(Socket server2 = ss.accept();
                     InputStream is = new ObjectInputStream(server2.getInputStream())) {
                     rival = (PlayerData) ((ObjectInputStream) is).readObject();
