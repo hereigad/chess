@@ -9,7 +9,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.event.MouseInputAdapter;
 import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.net.Socket;
 import java.net.URL;
 
 public class Match extends JFrame {
@@ -51,27 +50,21 @@ public class Match extends JFrame {
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
                         int[] movement = ((Match) SwingUtilities.getWindowAncestor(e.getComponent())).move((Square) e.getComponent());
-//                        if(movement != null) {
-//                            Client.sendMovement(movement);
-//                        }
+                        if(movement != null) {
+                            Client.sendMovement(movement);
+                        }
                     }
                 });
                 contentPane.add(squares[j][i], c);
             }
         }
-//        Thread receive = new Thread(new Runnable() {
-//            @Override
-//            public void run() {
-//                while(true) {
-//                    int[] movement = null;
-//                    movement = Client.receiveMovement();
-//                    if(movement != null) {
-//                        updateRival(movement);
-//                    }
-//                }
-//            }
-//        });
-//        receive.start();
+        Thread receive = new Thread(() -> {
+            while(true) {
+                int[] movement = Client.receiveMovement();
+                updateRival(movement);
+            }
+        });
+        receive.start();
 
         this.updateBoard();
         this.pack();

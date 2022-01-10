@@ -1,7 +1,5 @@
 package networkLogic;
 
-import com.google.gson.Gson;
-
 import java.io.*;
 import java.net.InetAddress;
 import java.net.ServerSocket;
@@ -31,12 +29,13 @@ public class Server {
                 pool.execute(() -> {
                     if(queue.size() % 2 == 0 && queue.size() > 0) {
                         AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]> pair1 = queue.remove();
-                        String player1 = pair1.getKey().getHostAddress();
-                        int receivePort = pair1.getValue()[1];
                         AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]> pair2 = queue.remove();
-                        try(Socket player = new Socket(player1, receivePort);
-                            OutputStream os = new ObjectOutputStream(player.getOutputStream())) {
-                            ((ObjectOutputStream) os).writeObject(pair2);
+                        try(Socket player1Socket = new Socket(pair1.getKey().getHostAddress(), pair1.getValue()[1]);
+                            Socket player2Socket = new Socket(pair2.getKey().getHostAddress(), pair2.getValue()[1]);
+                            OutputStream os1 = new ObjectOutputStream(player1Socket.getOutputStream());
+                            OutputStream os2 = new ObjectOutputStream(player2Socket.getOutputStream())) {
+                            ((ObjectOutputStream) os1).writeObject(new PlayerData(pair2.getKey(), pair2.getValue()[0], true));
+                            ((ObjectOutputStream) os2).writeObject(new PlayerData(pair1.getKey(), pair2.getValue()[0], false));
                         } catch(IOException e) {
                             e.printStackTrace();
                         }

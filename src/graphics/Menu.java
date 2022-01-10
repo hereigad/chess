@@ -1,16 +1,16 @@
 package graphics;
 
 import networkLogic.Client;
+import networkLogic.PlayerData;
 
 import javax.swing.*;
 import java.awt.event.ActionEvent;
-import java.net.Socket;
 import java.util.concurrent.*;
 
 public class Menu extends JFrame {
     private JButton matchmakeButton;
     private JPanel contentPane;
-    private Future<Socket> player2;
+    private Future<PlayerData> player2;
 
     public Menu() {
         this.setContentPane(contentPane);
@@ -22,14 +22,12 @@ public class Menu extends JFrame {
                 matchmakeButton.setEnabled(false);
                 player2 = Client.matchmake();
                 System.out.println("Matchmaking");
-
             }
         });
-
         this.pack();
     }
 
-    public Future<Socket> getPlayer2() {
+    public Future<PlayerData> getPlayer2() {
         return player2;
     }
 }

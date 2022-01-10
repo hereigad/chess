@@ -1,66 +1,49 @@
 package networkLogic;
 
-import com.google.gson.Gson;
 import game.Game;
 import game.Player;
 import graphics.Match;
 import graphics.Menu;
-import jdk.internal.util.xml.impl.Input;
 
 import java.io.*;
-import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.UnknownHostException;
-import java.util.AbstractMap;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Client {
     private static CountDownLatch c = new CountDownLatch(1);
     private static String[] ports;
     private static final ExecutorService pool = Executors.newCachedThreadPool();
-    private static Socket player2Socket;
+    private static PlayerData player2Data;
 
     public static void main(String[] args) {
         ports = args;
         Menu menu = new Menu();
         menu.setVisible(true);
-        player2Socket = null;
+        player2Data = null;
         Game game = null;
         Player localPlayer = null;
-        Future<Socket> player2Future2 = pool.submit(Client::acceptMatch);
         try {
             c.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
         }
-        Future<Socket> player2Future1 = menu.getPlayer2();
-        while(!player2Future1.isCancelled() && !player2Future2.isCancelled()) {
-            if(player2Future1.isDone() && !player2Future1.isCancelled()) {
-                System.out.println("El futuro 1 se ha completado");
-                try {
-                    player2Socket = player2Future1.get();
-                    player2Future2.cancel(true);
-                    localPlayer = new Player(true);
-                } catch(InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
-            if(player2Future2.isDone() && !player2Future2.isCancelled()) {
-                System.out.println("El futuro 2 se ha completado");
-                try {
-                    player2Socket = player2Future2.get();
-                    player2Future1.cancel(true);
-                    localPlayer = new Player(false);
-                } catch(InterruptedException | ExecutionException e) {
-                    e.printStackTrace();
-                }
-            }
+        Future<PlayerData> player2Future = menu.getPlayer2();
+        try {
+            player2Data = player2Future.get();
+            System.out.println("El futuro se ha completado");
+            localPlayer = new Player(player2Data.getSide());
+        } catch(InterruptedException | ExecutionException e) {
+            e.printStackTrace();
         }
-        if(player2Socket != null) {
-            System.out.println("Funciona");
+        if(player2Data != null) {
+            System.out.println("Datos de rival recibidos");
         }
-        if(localPlayer != null) {
+        AtomicBoolean connection = new AtomicBoolean(false);
+        pool.execute(() -> connection.set(acceptMatch()));
+        pool.execute(Client::tryConnection);
+        if(localPlayer != null && player2Data != null && connection.get()) {
             menu.dispose();
             game = new Game(localPlayer);
             Match match = new Match(game);
@@ -68,8 +51,8 @@ public class Client {
         }
     }
 
-    public static Future<Socket> matchmake() {
-        Future<Socket> player2;
+    public static Future<PlayerData> matchmake() {
+        Future<PlayerData> player2;
         pool.execute(() -> {
             try(Socket server = new Socket("localhost", 7200);
                 OutputStream os = new DataOutputStream(server.getOutputStream())) {
@@ -83,12 +66,11 @@ public class Client {
             }
         });
         player2 = pool.submit(() -> {
-            Socket rival = null;
+            PlayerData rival = null;
             try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[2]))) {
                 try(Socket server2 = ss.accept();
                     InputStream is = new ObjectInputStream(server2.getInputStream())) {
-                    AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]> player2pair = (AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]>) ((ObjectInputStream) is).readObject();
-                    rival = new Socket(player2pair.getKey().getHostAddress(), player2pair.getValue()[0]);
+                    rival = (PlayerData) ((ObjectInputStream) is).readObject();
                     System.out.println("Rival encontrado");
                 } catch(IOException e) {
                     e.printStackTrace();
@@ -96,25 +78,35 @@ public class Client {
             } catch(IOException e) {
                 e.printStackTrace();
             }
+            c.countDown();
             return rival;
         });
-        c.countDown();
         return player2;
     }
 
-    public static Socket acceptMatch() {
-        Socket player2Socket = null;
-        try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[0]))) {
-            player2Socket = ss.accept();
+    public static boolean acceptMatch() {
+        boolean connection = false;
+        try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[0]));
+            Socket player2 = ss.accept()) {
+            connection = true;
             System.out.println("Partida aceptada");
         } catch(IOException e) {
             e.printStackTrace();
         }
-        return player2Socket;
+        return connection;
+    }
+
+    public static void tryConnection() {
+        try(Socket player2 = new Socket(player2Data.getAddress(), player2Data.getPort())) {
+            System.out.println("Conexion exitosa");
+        } catch(IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void sendMovement(int[] movement) {
-        try(OutputStream os = new DataOutputStream(player2Socket.getOutputStream())) {
+        try(Socket player2Socket = new Socket(player2Data.getAddress(), player2Data.getPort());
+            OutputStream os = new DataOutputStream(player2Socket.getOutputStream())) {
             ((DataOutputStream) os).writeInt(movement[0]);
             ((DataOutputStream) os).writeInt(movement[1]);
         } catch(IOException e) {
@@ -125,7 +117,9 @@ public class Client {
     public static int[] receiveMovement() {
         int[] movement = new int[2];
         int i = 0;
-        try(InputStream is = new DataInputStream(player2Socket.getInputStream())) {
+        try(ServerSocket local = new ServerSocket(Integer.parseInt(ports[0]));
+            Socket player2Socket = local.accept();
+            InputStream is = new DataInputStream(player2Socket.getInputStream())) {
             while(i < 2) {
                 try {
                     movement[i] = ((DataInputStream) is).readInt();
