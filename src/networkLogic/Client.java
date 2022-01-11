@@ -11,12 +11,15 @@ import java.net.Socket;
 import java.util.concurrent.*;
 
 public class Client {
-    private static CountDownLatch c = new CountDownLatch(1);
+    private static final CountDownLatch c = new CountDownLatch(1);
     private static String[] ports;
     private static final ExecutorService pool = Executors.newCachedThreadPool();
     private static PlayerData player2Data;
 
     public static void main(String[] args) {
+        /* Los puertos se obtienen como parametro de entrada. Era la forma mas comoda de hacerlo teniendo que probar 2 clientes
+        * en la misma maquina.
+        */
         ports = args;
         Menu menu = new Menu();
         menu.setVisible(true);
@@ -24,6 +27,7 @@ public class Client {
         Game game = null;
         Player localPlayer = null;
         try {
+            //Esto esta para que a la interfaz le de tiempo a asignar el futuro al campo. Si no el menu.getPlayer2() devuelve null.
             c.await();
         } catch(InterruptedException e) {
             e.printStackTrace();
@@ -39,6 +43,7 @@ public class Client {
         if(player2Data != null) {
             System.out.println("Datos de rival recibidos");
         }
+        //Prueba de conexion para comprobar que el otro cliente puede conectarse.
         Future<Boolean> connection = pool.submit(Client::acceptMatch);
         pool.execute(Client::tryConnection);
         try {
@@ -56,6 +61,7 @@ public class Client {
     public static Future<PlayerData> matchmake() {
         Future<PlayerData> player2;
         pool.execute(() -> {
+            //Envia los datos de red al servidor para buscar partida
             try(Socket server = new Socket("localhost", 7200);
                 OutputStream os = new DataOutputStream(server.getOutputStream())) {
                 int gamePort = Integer.parseInt(ports[0]);
@@ -68,6 +74,7 @@ public class Client {
             }
         });
         player2 = pool.submit(() -> {
+            //Espera a que el servidor envie los datos de red del rival
             PlayerData rival = null;
             try(ServerSocket ss = new ServerSocket(Integer.parseInt(ports[1]))) {
                 try(Socket server2 = ss.accept();
@@ -106,6 +113,7 @@ public class Client {
         }
     }
 
+    //Los dos metodos siguientes son para enviar y recibir jugadas entre clientes
     public static void sendMovement(int[] movement) {
         try(Socket player2Socket = new Socket(player2Data.getAddress(), player2Data.getPort());
             OutputStream os = new DataOutputStream(player2Socket.getOutputStream())) {

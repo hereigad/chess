@@ -12,7 +12,12 @@ import java.util.concurrent.Executors;
 
 public class Server {
     public static void main(String[] args) {
+        /*
+        * Los jugadores van siendo almacenados en un fifo. Cuando el numero de jugadores es multiplo de 2 se extraen los
+        * y se envia a cada uno la informacion de red del otro.
+        */
         Queue<AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]>> queue = new ConcurrentLinkedQueue<>();
+        //Tuve que limitar el numero de hilos para que no llenase mi procesador. Con 4 hilos el servidor falla al servir una segunda partida.
         ExecutorService pool = Executors.newFixedThreadPool(8);
         try(ServerSocket server = new ServerSocket(7200)) {
             while(true) {

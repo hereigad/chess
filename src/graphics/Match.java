@@ -13,10 +13,12 @@ import java.net.URL;
 import java.util.Arrays;
 
 public class Match extends JFrame {
-    private Game game;
+    //Game es la representacion logica de la partida.
+    private final Game game;
 
     private JPanel contentPane;
-    private Square[][] squares;
+    //squares es la representacion en la interfaz grafica de la partida.
+    private final Square[][] squares;
     private Piece selected;
 
     public Match(Game game) {
@@ -25,17 +27,21 @@ public class Match extends JFrame {
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.game = game;
         this.selected = null;
+        //Utilizo un glassPane para restringir las jugadas durante el turno del rival.
         this.setGlassPane(new JPanel());
         ((JPanel) this.getGlassPane()).setOpaque(false);
+        //El glassPane intercepta los eventos de click.
         this.getGlassPane().addMouseListener(new MouseInputAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 super.mouseClicked(e);
             }
         });
+        //El jugador negro comienza con el glassPane activado.
         if(!game.getPlayer().getSide()) {
             this.getGlassPane().setVisible(true);
         }
+        //Se crea el tablero.
         squares = new Square[8][8];
         GridBagConstraints c = new GridBagConstraints();
         for(int i = 0; i < 8; i++) {
@@ -49,6 +55,7 @@ public class Match extends JFrame {
                 squares[i][j].setPreferredSize(new Dimension(70, 70));
                 c.gridx = j;
                 c.gridy = i;
+                //Cada casilla tiene un listener de click. Este llama a la funcion de movimiento y en el caso de que se devuelva un movimiento lo envia.
                 squares[i][j].addMouseListener(new MouseInputAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
@@ -62,6 +69,7 @@ public class Match extends JFrame {
                 contentPane.add(squares[i][j], c);
             }
         }
+        //Otro hilo se dedica a esperar los movimientos del rival para no bloquear la interfaz.
         Thread receive = new Thread(() -> {
             while(true) {
                 int[] movement = Client.receiveMovement();
@@ -74,6 +82,7 @@ public class Match extends JFrame {
         this.pack();
     }
 
+    //Esta funcion redibuja la interfaz cada vez que hay algun movimiento.
     private void updateBoard() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
@@ -104,18 +113,21 @@ public class Match extends JFrame {
         this.getContentPane().revalidate();
     }
 
-    private int[] move(Square square) {
+    public int[] move(Square square) {
         Piece piece = game.getBoard()[square.getI()][square.getJ()];
         int[] movement = null;
         if(selected == null) {
+            //Si no hay ninguna pieza seleccionada se selecciona la que se encuentre en square y se recuadra la casilla en verde.
             if(piece != null && piece.isColor() == game.getPlayer().getSide()) {
                 this.selected = piece;
                 square.setBorder(new LineBorder(Color.GREEN));
             }
         } else {
+            //Si ya hay una pieza seleccionada se efectua el movimiento. se guarda la posicion inicial y la final.
             movement = new int[]{square.getI(), square.getJ(), selected.getPosition()[0], selected.getPosition()[1]};
             if(this.selected.validateMovement(movement, game.getBoard()[movement[0]][movement[1]])) {
                 this.getGlassPane().setVisible(true);
+                //Las piezas comidas se van almacenando en una lista en el objeto del jugador que las come.
                 if(piece != null) {
                     game.getPlayer().getCaptured().add(piece);
                 }
@@ -129,6 +141,7 @@ public class Match extends JFrame {
         return movement;
     }
 
+    //Cuando llega el movimiento de un rival se efectua en el propio cliente.
     private void updateRival(int[] movement) {
         if(movement != null) {
             int[] transformedMovement = transformMovement(movement);
@@ -141,6 +154,7 @@ public class Match extends JFrame {
         }
     }
 
+    //Es necesario transformar los movimientos recibidos por que el tablero de cada jugador esta traspuesto respecto al de su rival.
     private int[] transformMovement(int[] movement) {
         for(int i = 0; i < 4; i++) {
             movement[i] = 7 - movement[i];
