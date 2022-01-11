@@ -33,20 +33,23 @@ public class Match extends JFrame {
                 super.mouseClicked(e);
             }
         });
+        if(!game.getPlayer().getSide()) {
+            this.getGlassPane().setVisible(true);
+        }
         squares = new Square[8][8];
         GridBagConstraints c = new GridBagConstraints();
-        for(int i = 7; i > -1; i--) {
+        for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                squares[j][i] = new Square(i, j);
-                squares[j][i].setBorder(new LineBorder(Color.BLACK));
+                squares[i][j] = new Square(i, j);
+                squares[i][j].setBorder(new LineBorder(Color.BLACK));
                 if((j + i) % 2 != 0) {
-                    squares[j][i].setBackground(Color.DARK_GRAY);
+                    squares[i][j].setBackground(Color.DARK_GRAY);
                 }
-                squares[j][i].setMinimumSize(new Dimension(70, 70));
-                squares[j][i].setPreferredSize(new Dimension(70, 70));
+                squares[i][j].setMinimumSize(new Dimension(70, 70));
+                squares[i][j].setPreferredSize(new Dimension(70, 70));
                 c.gridx = j;
                 c.gridy = i;
-                squares[j][i].addMouseListener(new MouseInputAdapter() {
+                squares[i][j].addMouseListener(new MouseInputAdapter() {
                     @Override
                     public void mouseClicked(MouseEvent e) {
                         super.mouseClicked(e);
@@ -56,7 +59,7 @@ public class Match extends JFrame {
                         }
                     }
                 });
-                contentPane.add(squares[j][i], c);
+                contentPane.add(squares[i][j], c);
             }
         }
         Thread receive = new Thread(() -> {
@@ -74,50 +77,51 @@ public class Match extends JFrame {
     private void updateBoard() {
         for(int i = 0; i < 8; i++) {
             for(int j = 0; j < 8; j++) {
-                Piece p = game.board[7 - i][7 - j];
+                Piece p = game.getBoard()[i][j];
                 if(((LineBorder) squares[i][j].getBorder()).getLineColor() == Color.GREEN) {
                     squares[i][j].setBorder(new LineBorder(Color.BLACK));
                 }
-                if(p == null) {
-                    if(squares[i][j].getComponents().length > 0) {
-                        squares[i][j].remove(0);
-                    }
-                } else {
+                if(squares[i][j].getComponents().length > 0) {
+                    squares[i][j].remove(0);
+                }
+                if(p != null) {
                     char color = 'd';
-                    if(p.color) {
+                    if(p.isColor()) {
                         color = 'l';
                     }
-                    String path = "/pieceIcons/Chess_" + p.name + color + "t45.png";
+                    String path = "/pieceIcons/Chess_" + p.getName() + color + "t45.png";
                     URL imageURL = getClass().getResource(path);
                     assert imageURL != null;
                     ImageIcon pieceIcon = new ImageIcon(imageURL);
+
                     if(squares[i][j].getComponents().length == 0) {
                         squares[i][j].add(new JLabel(pieceIcon, JLabel.CENTER));
                     }
                 }
             }
         }
-        this.revalidate();
+        this.getContentPane().repaint();
+        this.getContentPane().revalidate();
     }
 
     private int[] move(Square square) {
-        Piece piece = game.board[7 - square.getJ()][7 - square.getI()];
+        Piece piece = game.getBoard()[square.getI()][square.getJ()];
         int[] movement = null;
         if(selected == null) {
-            if(piece != null && piece.color == game.player.getSide()) {
+            if(piece != null && piece.isColor() == game.getPlayer().getSide()) {
                 this.selected = piece;
                 square.setBorder(new LineBorder(Color.GREEN));
             }
         } else {
-            movement = new int[]{7 - square.getJ(), 7 - square.getI(), selected.position[0], selected.position[1]};
-            if(this.selected.validateMovement(movement, game.board[movement[0]][movement[1]])) {
-                //this.getGlassPane().setVisible(true);
+            movement = new int[]{square.getI(), square.getJ(), selected.getPosition()[0], selected.getPosition()[1]};
+            if(this.selected.validateMovement(movement, game.getBoard()[movement[0]][movement[1]])) {
+                this.getGlassPane().setVisible(true);
                 if(piece != null) {
-                    game.player.getCaptured().add(piece);
+                    game.getPlayer().getCaptured().add(piece);
                 }
-                game.board[selected.position[0]][selected.position[1]] = null;
-                selected.position = Arrays.copyOfRange(movement, 0, 2);
-                game.board[movement[0]][movement[1]] = selected;
+                game.getBoard()[selected.getPosition()[0]][selected.getPosition()[1]] = null;
+                selected.setPosition(Arrays.copyOfRange(movement, 0, 2));
+                game.getBoard()[movement[0]][movement[1]] = selected;
             }
             selected = null;
             updateBoard();
@@ -127,12 +131,20 @@ public class Match extends JFrame {
 
     private void updateRival(int[] movement) {
         if(movement != null) {
-            Piece piece = game.board[7 - movement[2]][7 - movement[3]];
-            game.board[piece.position[0]][piece.position[1]] = null;
-            piece.position = Arrays.copyOfRange(movement, 0, 2);
-            game.board[7 - movement[0]][7 - movement[1]] = piece;
-            //this.getGlassPane().setVisible(false);
+            int[] transformedMovement = transformMovement(movement);
+            Piece piece = game.getBoard()[transformedMovement[2]][transformedMovement[3]];
+            game.getBoard()[piece.getPosition()[0]][piece.getPosition()[1]] = null;
+            piece.setPosition(Arrays.copyOfRange(transformedMovement, 0, 2));
+            game.getBoard()[transformedMovement[0]][transformedMovement[1]] = piece;
+            this.getGlassPane().setVisible(false);
             updateBoard();
         }
+    }
+
+    private int[] transformMovement(int[] movement) {
+        for(int i = 0; i < 4; i++) {
+            movement[i] = 7 - movement[i];
+        }
+        return movement;
     }
 }

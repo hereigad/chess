@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 public class Server {
     public static void main(String[] args) {
         Queue<AbstractMap.SimpleImmutableEntry<InetAddress, Integer[]>> queue = new ConcurrentLinkedQueue<>();
-        ExecutorService pool = Executors.newFixedThreadPool(4);
+        ExecutorService pool = Executors.newFixedThreadPool(8);
         try(ServerSocket server = new ServerSocket(7200)) {
             while(true) {
                 pool.execute(() -> {

@@ -3,43 +3,51 @@ package game;
 import chess.*;
 
 public class Game {
-    public Piece[][] board;
-    public Player player;
+    private final Piece[][] board;
+    private final Player player;
 
     public Game(Player player) {
         this.player = player;
         board = new Piece[8][8];
-        board[0][0] = new Rook(new int[]{0,0}, player.getSide());
-        board[1][0] = new Knight(new int[]{1,0}, player.getSide());
-        board[2][0] = new Bishop(new int[]{2,0}, player.getSide());
-        board[5][0] = new Bishop(new int[]{5,0}, player.getSide());
-        board[6][0] = new Knight(new int[]{6,0}, player.getSide());
-        board[7][0] = new Rook(new int[]{7,0}, player.getSide());
-        board[0][7] = new Rook(new int[]{0,7}, !player.getSide());
-        board[1][7] = new Knight(new int[]{1,7}, !player.getSide());
-        board[2][7] = new Bishop(new int[]{2,7}, !player.getSide());
-        board[5][7] = new Bishop(new int[]{5,7}, !player.getSide());
-        board[6][7] = new Knight(new int[]{6,7}, !player.getSide());
-        board[7][7] = new Rook(new int[]{7,7}, !player.getSide());
+        getBoard()[7][0] = new Rook(new int[]{7,0}, player.getSide());
+        getBoard()[7][1] = new Knight(new int[]{7,1}, player.getSide());
+        getBoard()[7][2] = new Bishop(new int[]{7,2}, player.getSide());
+        getBoard()[7][5] = new Bishop(new int[]{7,5}, player.getSide());
+        getBoard()[7][6] = new Knight(new int[]{7,6}, player.getSide());
+        getBoard()[7][7] = new Rook(new int[]{7,7}, player.getSide());
+        getBoard()[0][0] = new Rook(new int[]{0,0}, !player.getSide());
+        getBoard()[0][1] = new Knight(new int[]{0,1}, !player.getSide());
+        getBoard()[0][2] = new Bishop(new int[]{0,2}, !player.getSide());
+        getBoard()[0][5] = new Bishop(new int[]{0,5}, !player.getSide());
+        getBoard()[0][6] = new Knight(new int[]{0,6}, !player.getSide());
+        getBoard()[0][7] = new Rook(new int[]{0,7}, !player.getSide());
         if(player.getSide()) {
-            board[3][0] = new Queen(new int[]{3,0}, player.getSide());
-            board[4][0] = new King(new int[]{4,0}, player.getSide());
+            getBoard()[7][3] = new Queen(new int[]{7,3}, player.getSide());
+            getBoard()[7][4] = new King(new int[]{7,4}, player.getSide());
 
-            board[3][7] = new Queen(new int[]{3,7}, !player.getSide());
-            board[4][7] = new King(new int[]{4,7}, !player.getSide());
+            getBoard()[0][3] = new Queen(new int[]{0,3}, !player.getSide());
+            getBoard()[0][4] = new King(new int[]{0,4}, !player.getSide());
         } else {
-            board[3][0] = new King(new int[]{3,0}, player.getSide());
-            board[4][0] = new Queen(new int[]{4,0}, player.getSide());
+            getBoard()[7][3] = new King(new int[]{7,3}, player.getSide());
+            getBoard()[7][4] = new Queen(new int[]{7,4}, player.getSide());
 
-            board[3][7] = new King(new int[]{3,7}, !player.getSide());
-            board[4][7] = new Queen(new int[]{4,7}, !player.getSide());
+            getBoard()[0][3] = new King(new int[]{0,3}, !player.getSide());
+            getBoard()[0][4] = new Queen(new int[]{0,4}, !player.getSide());
         }
         for(int i = 0; i < 8; i++) {
-            board[i][1] = new Pawn(new int[]{i,1}, player.getSide());
-            board[i][6] = new Pawn(new int[]{i,6}, !player.getSide());
+            getBoard()[6][i] = new Pawn(new int[]{6,i}, player.getSide());
+            getBoard()[1][i] = new Pawn(new int[]{1,i}, !player.getSide());
             for(int j = 2; j < 6; j++) {
-                board[i][j] = null;
+                getBoard()[j][i] = null;
             }
         }
+    }
+
+    public Piece[][] getBoard() {
+        return board;
+    }
+
+    public Player getPlayer() {
+        return player;
     }
 }

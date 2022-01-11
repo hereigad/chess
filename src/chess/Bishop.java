@@ -3,15 +3,15 @@ package chess;
 public class Bishop extends Piece {
     public Bishop(int[] position, boolean color) {
         super(position, color);
-        this.name = "b";
+        this.setName("b");
     }
 
     @Override
     public boolean validateMovement(int[] movement, Piece capturable) {
         boolean capture = true;
         if(capturable != null) {
-            capture = this.color != capturable.color;
+            capture = this.isColor() != capturable.isColor();
         }
-        return (position[0] - position[1] == movement[0] - movement[1] || position[0] + position[1] == movement[0] + movement[1]) && capture;
+        return (getPosition()[0] - getPosition()[1] == movement[0] - movement[1] || getPosition()[0] + getPosition()[1] == movement[0] + movement[1]) && capture;
     }
 }

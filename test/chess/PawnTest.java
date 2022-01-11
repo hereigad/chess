@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class PawnTest {
-    Pawn pawn = new Pawn(new int[] {1, 1}, true);
+    Pawn pawn = new Pawn(new int[] {6, 1}, true);
 
     @Test
     void validateMovement() {
@@ -19,7 +19,7 @@ class PawnTest {
         assertFalse(pawn.validateMovement(new int[]{0, 7}, null));
         assertFalse(pawn.validateMovement(new int[]{1, 0}, null));
         assertFalse(pawn.validateMovement(new int[]{1, 1}, null));
-        assertTrue(pawn.validateMovement(new int[]{1, 2}, null));
+        assertFalse(pawn.validateMovement(new int[]{1, 2}, null));
         assertFalse(pawn.validateMovement(new int[]{1, 3}, null));
         assertFalse(pawn.validateMovement(new int[]{1, 4}, null));
         assertFalse(pawn.validateMovement(new int[]{1, 5}, null));
@@ -50,7 +50,7 @@ class PawnTest {
         assertFalse(pawn.validateMovement(new int[]{4, 6}, null));
         assertFalse(pawn.validateMovement(new int[]{4, 7}, null));
         assertFalse(pawn.validateMovement(new int[]{5, 0}, null));
-        assertFalse(pawn.validateMovement(new int[]{5, 1}, null));
+        assertTrue(pawn.validateMovement(new int[]{5, 1}, null));
         assertFalse(pawn.validateMovement(new int[]{5, 2}, null));
         assertFalse(pawn.validateMovement(new int[]{5, 3}, null));
         assertFalse(pawn.validateMovement(new int[]{5, 4}, null));
@@ -76,7 +76,7 @@ class PawnTest {
 
         assertFalse(pawn.validateMovement(new int[]{0, 0}, new Pawn(new int[]{0, 0}, false)));
         assertFalse(pawn.validateMovement(new int[]{0, 1}, new Pawn(new int[]{0, 1}, false)));
-        assertTrue(pawn.validateMovement(new int[]{0, 2}, new Pawn(new int[]{0, 2}, false)));
+        assertFalse(pawn.validateMovement(new int[]{0, 2}, new Pawn(new int[]{0, 2}, false)));
         assertFalse(pawn.validateMovement(new int[]{0, 3}, new Pawn(new int[]{0, 3}, false)));
         assertFalse(pawn.validateMovement(new int[]{0, 4}, new Pawn(new int[]{0, 4}, false)));
         assertFalse(pawn.validateMovement(new int[]{0, 5}, new Pawn(new int[]{0, 5}, false)));
@@ -92,7 +92,7 @@ class PawnTest {
         assertFalse(pawn.validateMovement(new int[]{1, 7}, new Pawn(new int[]{1, 7}, false)));
         assertFalse(pawn.validateMovement(new int[]{2, 0}, new Pawn(new int[]{2, 0}, false)));
         assertFalse(pawn.validateMovement(new int[]{2, 1}, new Pawn(new int[]{2, 1}, false)));
-        assertTrue(pawn.validateMovement(new int[]{2, 2}, new Pawn(new int[]{2, 2}, false)));
+        assertFalse(pawn.validateMovement(new int[]{2, 2}, new Pawn(new int[]{2, 2}, false)));
         assertFalse(pawn.validateMovement(new int[]{2, 3}, new Pawn(new int[]{2, 3}, false)));
         assertFalse(pawn.validateMovement(new int[]{2, 4}, new Pawn(new int[]{2, 4}, false)));
         assertFalse(pawn.validateMovement(new int[]{2, 5}, new Pawn(new int[]{2, 5}, false)));
@@ -114,9 +114,9 @@ class PawnTest {
         assertFalse(pawn.validateMovement(new int[]{4, 5}, new Pawn(new int[]{4, 5}, false)));
         assertFalse(pawn.validateMovement(new int[]{4, 6}, new Pawn(new int[]{4, 6}, false)));
         assertFalse(pawn.validateMovement(new int[]{4, 7}, new Pawn(new int[]{4, 7}, false)));
-        assertFalse(pawn.validateMovement(new int[]{5, 0}, new Pawn(new int[]{5, 0}, false)));
+        assertTrue(pawn.validateMovement(new int[]{5, 0}, new Pawn(new int[]{5, 0}, false)));
         assertFalse(pawn.validateMovement(new int[]{5, 1}, new Pawn(new int[]{5, 1}, false)));
-        assertFalse(pawn.validateMovement(new int[]{5, 2}, new Pawn(new int[]{5, 2}, false)));
+        assertTrue(pawn.validateMovement(new int[]{5, 2}, new Pawn(new int[]{5, 2}, false)));
         assertFalse(pawn.validateMovement(new int[]{5, 3}, new Pawn(new int[]{5, 3}, false)));
         assertFalse(pawn.validateMovement(new int[]{5, 4}, new Pawn(new int[]{5, 4}, false)));
         assertFalse(pawn.validateMovement(new int[]{5, 5}, new Pawn(new int[]{5, 5}, false)));

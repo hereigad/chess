@@ -3,15 +3,15 @@ package chess;
 public class Rook extends Piece {
     public Rook(int[] position, boolean color) {
         super(position, color);
-        this.name = "r";
+        this.setName("r");
     }
 
     @Override
     public boolean validateMovement(int[] movement, Piece capturable) {
         boolean capture = true;
         if(capturable != null) {
-            capture = this.color != capturable.color;
+            capture = this.isColor() != capturable.isColor();
         }
-        return (movement[0] == position[0] || movement[1] == position[1]) && capture;
+        return (movement[0] == getPosition()[0] || movement[1] == getPosition()[1]) && capture;
     }
 }
